@@ -7,8 +7,15 @@
 
 import SwiftUI
 
+/// A view showing the given time in a readable format.
+/// Used by ``Working View`` to show the time remaining until
+/// the next break.
 struct CountdownView: View {
+    
+    /// The break to be had once `time` is 0.
     var nextBreak: Break
+    
+    /// The time remaining (seconds) until `nextbreak` is active.
     var time: Int
 
     var body: some View {
@@ -47,6 +54,9 @@ struct CountdownView: View {
     }
 
     
+    /// Provides a readable string in the "minutes : seconds" format from the given time in seconds.
+    /// - Parameter seconds: The time in seconds.
+    /// - Returns: A readable string in the minutes:seconds format.
     func convertSecondsToMinuteSec(seconds:Int) -> String{
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]
@@ -55,7 +65,11 @@ struct CountdownView: View {
         let formattedString = formatter.string(from:TimeInterval(seconds))!
         return formattedString
     }
-    
+
+    /// Provides a readable string in the format of "x minutes and y seconds until your z break".
+    /// Used for accessibility purposes.
+    /// - Parameter seconds: The time in seconds.
+    /// - Returns: a readable string in the format of "x minutes and y seconds until your z break".
     func timeAsString(seconds: Int) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute]

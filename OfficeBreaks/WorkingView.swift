@@ -8,21 +8,44 @@
 import SwiftUI
 import UserNotifications
 
+/// A view to manage and display the break countdown.
+/// Shown while the user is working.
 struct WorkingView: View {
+    /// The dismiss action for the current environment.
     @Environment(\.dismiss) var dismiss
+    
+    /// The scene phase of the current environment.
     @Environment(\.scenePhase) var scenePhase
     
+    /// A stored boolean value indicating whether the users has enabled screen breaks.
     @AppStorage("screenBreaksEnabled") private var screenBreaksEnabled = true
+    
+    /// A stored boolean value indicating whether the user has enabled desk breaks.
     @AppStorage("deskBreaksEnabled") private var deskBreaksEnabled = true
     
+    /// A boolean value indicating whether the break sheet is showing.
     @State private var showingBreakSheet = false
+    
+    /// A boolean value indicating whether the current scene phase is active.
     @State private var isActive = true
+    
+    /// A boolean value indicating whether the stop timer alert is showing.
     @State private var showingAlert = false
+    
+    /// The order number of the next break to be had by the user.
+    /// Used by `nextBreak` to calculate which break should be next.
     @State private var breakNumber = 0
+    
+    /// The end date of `breaktimer`.
     @State private var timerEndDate = Date.now.addingTimeInterval(Double(0))
+    
+    /// The time (seconds) until `breakTimer` finishes.
     @State private var timeRemaining: Int = 5
+    
+    /// A timer used to trigger breaks.
     let breakTimer = Timer.publish(every: 1, tolerance: 0.4, on: .main, in: .common).autoconnect()
-
+    
+    /// The next break the user will have.
     private var nextBreak: Break {
         if breakNumber % 3 == 0 {
             deskBreaksEnabled ? Break.desk : Break.screen
@@ -31,6 +54,7 @@ struct WorkingView: View {
         }
     }
     
+    /// Adds a push notification to remind the user when the next break starts.
     func addBreakNotification() {
         let center = UNUserNotificationCenter.current()
         center.removeAllDeliveredNotifications()
@@ -62,7 +86,8 @@ struct WorkingView: View {
             }
         }
     }
-
+    
+    /// Starts the countdown for the next break.
     func startWork() {
         breakNumber += 1
         if nextBreak.title == Break.desk.title && screenBreaksEnabled {
@@ -74,12 +99,12 @@ struct WorkingView: View {
         addBreakNotification()
     }
     
+    /// Stops the countdown while a break is active.
     func stopWork() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         breakTimer.upstream.connect().cancel()
         dismiss()
     }
-    
     
     var body: some View {
         ZStack {
@@ -121,7 +146,6 @@ struct WorkingView: View {
         .sheet(isPresented: $showingBreakSheet) {
             BreakView(nextBreak, onDismiss: startWork)
                 .interactiveDismissDisabled()
-                .presentationDetents([.medium])
         }
         .alert("Stop the timer", isPresented: $showingAlert) {
             Button("Stop", role: .destructive) { stopWork() }

@@ -7,9 +7,16 @@
 
 import SwiftUI
 
+/// A view displaying a stopwatch style button.
 struct StopwatchButton: View {
+    
+    /// The text to display on the button.
     let text: String
+    
+    /// The button's background color.
     let backgroundColor: Color
+    
+    /// The action to be performed when the button is pressed.
     var action: (() -> Void)? = nil
     
     var body: some View {

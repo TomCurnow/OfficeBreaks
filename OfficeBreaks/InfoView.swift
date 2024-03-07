@@ -7,8 +7,8 @@
 
 import SwiftUI
 
+/// A view to showing information about the benefits of office breaks.
 struct InfoView: View {
-    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
 

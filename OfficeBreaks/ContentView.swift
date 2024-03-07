@@ -8,15 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.colorScheme) private var colorScheme
-
+    
+    /// The hint for a screen break.
     private var screenBreakHint = "Occur every 20 minutes. During a screen break, spend 20 seconds looking at something around 20 feet away."
+
+    /// The hint for a desk break.
     private var deskBreakHint = "Occur every 60 minutes. During a desk break, spend around 10 minutes doing light physical activity away from your desk."
     
+    /// A stored boolean value indicating whether the users has enabled screen breaks.
     @AppStorage("screenBreaksEnabled") private var screenBreaksEnabled = true
+    
+    /// A stored boolean value indicating whether the user has enabled desk breaks.
     @AppStorage("deskBreaksEnabled") private var deskBreaksEnabled = true
     
+    /// A boolean value indicating whether the working view is being shown.
     @State private var showingWorkingView = false
+    
+    /// A boolean value indicating whether no breaks are currently selected
+    /// and therefore the user cannot start a break timer.
     private var noBreaksSelected: Bool { !(screenBreaksEnabled || deskBreaksEnabled) }
      
     var body: some View {
@@ -73,7 +82,9 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: 1024)
+        .accentColor(.green)
     }
+
 }
 
 #Preview {
